@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Owner Home</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="javascripts/owner.js" defer></script>
+  <script src="javascripts/main.js" defer></script>
+  <!-- font awesome -->
+  <script src="https://kit.fontawesome.com/832a41fd6d.js" crossorigin="anonymous"></script>
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- google authentication -->
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+  <meta name="google-signin-client_id" content="341339043890-4rr3gtr98gbja66hapco57gc0qhao9hc.apps.googleusercontent.com">
+  <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+    }
+
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+  </script>
+</head>
+
+<body onload="getBusiness();getOwnerName()">
+    <!--Banner-->
+  <div id="owner-container">
+    <div class ="navbar navbar-owner">
+        <img src="https://i.imgur.com/apF8BRb.png" alt="COVID banner" height="150">
+        <div class="img-title">
+            <h1 class="h1-banner">Owner</h1>
+        </div>
+        <button class="btn btn-danger navbar-btn navbar-ml-auto" onclick="logoutowner(); signOut();">Log Out</button>
+    </div>
+
+    <div class="text-div">
+        <h3 class="h3-sign">Welcome</h3>
+        <h4 class="greetings" id="greet_owner"></h4>
+    </div><br><br>
+    <!--Biz 1-->
+    <div class="container">
+      <div class="card-deck" id="card-deck-owner">
+        <div class="card bg-light col-sm-4">
+          <div class="card-body" id="first_card_owner">
+            <h5 class="card-title" id="venue1_name"></h5>
+            <p class="card-text" id="venue1_size"></p>
+            <p class="card-text" id="venue1_type"></p>
+            <p class="card-text" id="venue1_cap"></p>
+            <p class="card-text" id="code_1"></p><br>
+            <button class="btn btn-info" id="owner-button">
+      			Edit</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" id="qrbtn">Get QR</button><br><br>
+  		      <button class="btn btn-danger" id="con-button">Remove</button>
+          </div>
+        </div>
+        <!-- Biz 2 -->
+        <div class="card bg-light col-sm-4">
+          <div class="card-body" id="first_card_owner">
+            <h5 class="card-title" id="venue2_name"></h5>
+            <p class="card-text" id="venue2_size"></p>
+            <p class="card-text" id="venue2_type"></p>
+            <p class="card-text" id="venue2_cap"></p>
+            <p class="card-text" id="code_2"></p><br>
+            <button class="btn btn-info" id="owner-button2">
+      			Edit</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" id="qrbtn2">Get QR</button><br><br>
+  		      <button class="btn btn-danger" id="con-button2">Remove</button>
+          </div>
+        </div>
+        <!-- Biz 3 -->
+        <div class="card bg-light col-sm-4">
+          <div class="card-body">
+            <h5 class="card-title" id="venue3_name"></h5>
+            <p class="card-text" id="venue3_size"></p>
+            <p class="card-text" id="venue3_type"></p>
+            <p class="card-text" id="venue3_cap"></p>
+            <p class="card-text" id="code_3"></p><br>
+            <button class="btn btn-info" id="owner-button3">
+      			Edit</button>&nbsp;&nbsp;&nbsp;<button class="btn btn-primary" id="qrbtn3">Get QR</button><br><br>
+  		      <button class="btn btn-danger" id="con-button3">Remove</button>
+          </div>
+        </div>
+        <!-- Add Biz -->
+        <div class="card bg-light col-sm-4">
+          <div class="card-body" id="wrapper">
+            <!--<h5 class="card-title">Venue Three</h5>-->
+            <button class="button-add add-business" id="owner-button4">
+      			  +
+  		      </button>
+            <!--<p class="card-text"><small class="text-muted">Click to add new business</small></p>-->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- testing qr
+    <div class="container" id="get_qr">
+      <button class="btn btn-outline-info" onclick="qrbun()">qrcode</button>
+      <canvas id="canvas"></canvas>
+    <script src="bundle.js"></script>
+    </div> -->
+
+  <!--Owner Card modal 1-->
+  <div id="ownerModal1" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x4">&times;</span>
+              <h3>Venue #1</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <!--Label for attribute specifies which element id the label is bound to-->
+                  <label>Edit Business Name</label>
+                  <br>
+                  <input id="biz_name1" type="text" class="form-control" placeholder="Change Business Name" size="35" required autofocus>
+                  <br>
+                  <label>Venue Size (sq.m)</label>
+                  <input id="biz_size1" type="text" class="form-control" placeholder="e.g 200" size="35" required>
+                  <br>
+                  <label>Business Type</label>
+                  <input id="biz_type1" type="text" class="form-control" placeholder="e.g F&B, Fashion, Manufacturing" size="35" required>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" type="submit" onclick="editBusiness1()">Update</button>
+
+              </form>
+          </div>
+
+      </div>
+  </div>
+
+  <!--Owner Card modal 2-->
+  <div id="ownerModal2" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x5">&times;</span>
+              <h3>Venue #2</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <!--Label for attribute specifies which element id the label is bound to-->
+                  <label>Edit Business Name</label>
+                  <br>
+                  <input id="biz_name2" type="text" class="form-control" placeholder="Change Business Name" size="35" required>
+                  <br>
+                  <label>Venue Size (sq.m)</label>
+                  <input id="biz_size2" type="text" class="form-control" placeholder="e.g 200" size="35" required>
+                  <br>
+                  <label>Business Type</label>
+                  <input id="biz_type2" type="text" class="form-control" placeholder="e.g F&B, Fashion, Manufacturing" size="35" required>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" type="submit" onclick="editBusiness2()">Update</button>
+
+              </form>
+          </div>
+
+      </div>
+  </div>
+
+  <!--Owner Card modal 3-->
+  <div id="ownerModal3" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x6">&times;</span>
+              <h3>Venue #3</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <!--Label for attribute specifies which element id the label is bound to-->
+                  <label>Edit Business Name</label>
+                  <br>
+                  <input id="biz_name3" type="text" class="form-control" placeholder="Change Business Name" size="35" required>
+                  <br>
+                  <label>Venue Size (sq.m)</label>
+                  <input id="biz_size3" type="text" class="form-control" placeholder="e.g 200" size="35" required>
+                  <br>
+                  <label>Business Type</label>
+                  <input id="biz_type3" type="text" class="form-control" placeholder="e.g F&B, Fashion, Manufacturing" size="35" required>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" type="submit" onclick="editBusiness3()">Update</button>
+              </form>
+          </div>
+
+      </div>
+  </div>
+
+  <!--Owner Card modal 4 (Adding business)-->
+  <div id="ownerModal4" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x7">&times;</span>
+              <h3>New Business</h3>
+          </div>
+
+          <div class="modal-login-body-biz">
+              <form>
+                  <!--Label for attribute specifies which element id the label is bound to-->
+                  <label>New Business Name</label>
+                  <input id="newBname" type="text" class="form-control" placeholder="Enter Name" size="35" required>
+
+                  <label>Venue Size (sq.m)</label>
+                  <input id="newBsize" type="text" class="form-control" placeholder="e.g 200" size="35" required>
+
+                  <label>Business Type</label>
+                  <input id="newBtype" type="text" class="form-control" placeholder="e.g F&B, Fashion" size="35" required>
+
+                  <label>Business Contact #</label>
+                  <input id="newBnum" type="number" class="form-control" placeholder="e.g 0411111555" size="35" required>
+
+                  <label>Business Address</label>
+                  <input id="newBadd" type="text" class="form-control" placeholder="e.g 30 Fox Drive" size="35" required>
+
+                  <label>Business Zip</label>
+                  <input id="newBzip" type="number" class="form-control" placeholder="e.g 5000" size="35" required>
+
+                  <label>Unique Business Code</label>
+                  <input id="newBcode" type="text" class="form-control" placeholder="e.g XXBBNNNAD" size="35" required>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" type="submit" onclick="addBusiness()">Add</button>
+              </form>
+          </div>
+
+      </div>
+  </div>
+  <!--Confirmation Modal 1-->
+  <div id="ownerModal5" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x8">&times;</span>
+              <h3>Attention</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <label>Are you sure you want to remove this business? This action cannot be undone.</label>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" onclick="removeBiz()">Confirm</button>
+              </form>
+          </div>
+      </div>
+  </div>
+  <!--Confirmation Modal 2-->
+  <div id="ownerModal6" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x9">&times;</span>
+              <h3>Attention</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <label>Are you sure you want to remove this business? This action cannot be undone.</label>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" onclick="removeBiz2()">Confirm</button>
+              </form>
+          </div>
+      </div>
+  </div>
+  <!--Confirmation Modal 3-->
+  <div id="ownerModal7" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x10">&times;</span>
+              <h3>Attention</h3>
+          </div>
+
+          <div class="modal-login-body-3">
+              <form>
+                  <label>Are you sure you want to remove this business? This action cannot be undone.</label>
+                  <br>
+                  <button class="btn btn-success long sign-in-button" onclick="removeBiz3()">Confirm</button>
+              </form>
+          </div>
+      </div>
+  </div>
+
+  <!--QR Code Modal 1-->
+  <div id="ownerModal8" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x11">&times;</span>
+              <h3>QR Scan</h3>
+          </div>
+
+          <div class="modal-login-body-3 middletext">
+
+                  <label>Please generate QR Code to scan</label>
+                  <br>
+                  <div id="get_qr">
+                  <div class="div-move-mid">
+                  <button class="btn btn-outline-info" onclick="qrbun()">GENERATE</button>
+                  </div>
+                  <canvas id="canvas"></canvas>
+                  <!--<script src="bundle.js"></script>-->
+                  </div>
+          </div>
+      </div>
+  </div>
+  <!--QR Code Modal 2-->
+  <div id="ownerModal9" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x12">&times;</span>
+              <h3>QR Scan</h3>
+          </div>
+
+          <div class="modal-login-body-3 middletext">
+
+                  <label>Please generate QR Code to scan</label>
+                  <br>
+                  <div id="get_qr2">
+                  <div class="div-move-mid">
+                  <button class="btn btn-outline-info" onclick="qrbun2()">GENERATE</button>
+                  </div>
+                  <canvas id="canvas"></canvas>
+                  <!--<script src="bundle.js"></script>-->
+                  </div>
+          </div>
+      </div>
+  </div>
+  <!--QR Code Modal 3-->
+  <div id="ownerModal10" class="modal">
+      <div class="modal-content2">
+          <div class="modal-login-header2">
+              <span class="close-modal" id="closed-x13">&times;</span>
+              <h3>QR Scan</h3>
+          </div>
+
+          <div class="modal-login-body-3 middletext">
+
+                  <label>Please generate QR Code to scan</label>
+                  <br>
+                  <div id="get_qr3">
+                  <div class="div-move-mid">
+                  <button class="btn btn-outline-info" onclick="qrbun3()">GENERATE</button>
+                  </div>
+                  <canvas id="canvas"></canvas>
+                  <!--<script src="bundle.js"></script>-->
+                  </div>
+          </div>
+      </div>
+  </div>
+
+  </div>
+
+</body>
+
+</html>

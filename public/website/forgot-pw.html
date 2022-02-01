@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Forgot Password</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- font awesome -->
+  <script src="https://kit.fontawesome.com/832a41fd6d.js" crossorigin="anonymous"></script>
+  <script src="javascripts/main.js" defer></script>
+
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+</head>
+
+<body onload="start()">
+    <!--Banner using navbar-->
+    <div class ="navbar navbar-index">
+        <img src="https://i.imgur.com/apF8BRb.png" alt="COVID banner" height="150">
+    </div>
+    <br>
+    <h1 class="h1-home">Forgot Password?</h1>
+
+    <div class="form-create">
+        <form action="/userLogin" method="post">
+            <!--Label for attribute specifies which element id the label is bound to-->
+            <label>First Name</label>
+            <br>
+    		<input name="firstname" type="text" class="form-control" placeholder="First Name" required>
+    		<br>
+
+    		<label>Last Name</label>
+            <br>
+    		<input name="lastname" type="text" class="form-control" placeholder="Last Name" required>
+    		<br>
+
+            <label>Email</label>
+            <br>
+            <input name="email" type="text" id="forgotpw-email" class="form-control" placeholder="Email" size="35" required>
+            <br>
+
+            <a href="index.html" class="btn btn-secondary">Cancel</a>
+            <button class="btn btn-success long register-button" type="submit">Submit</button>
+
+        </form>
+    </div>
+</body>
+
+</html>

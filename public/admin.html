@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Admin Home</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="javascripts/main.js" defer></script>
+  <script src="javascripts/user.js" defer></script>
+  <script src="javascripts/admin.js" defer></script>
+  <script src="javascripts/map.js" defer></script>
+
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--Mapbox-->
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+
+  <!--Vue-->
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12"></script>
+
+</head>
+
+<body onload="getUpdates();getHotspotTotal();getUsersInfo();getCheckInTotal();;getVenueInTotal();">
+    <div class="container-fluid p-0">
+    <!--Navigation bar and banner-->
+    <div class ="navbar navbar-admin" style="position: sticky;top: 0;">
+        <img src="https://i.imgur.com/apF8BRb.png" alt="COVID banner" height="150">
+        <div class="img-title">
+            <h1 class="h1-banner">Admin</h1>
+        </div>
+        <button class="btn btn-danger navbar-btn navbar-ml-auto" onclick="logout()">Log Out</button>
+    </div>
+    <!--Sidebar-->
+    <div class="side-bar">
+        <button class="side-blocks" onclick="vueinst.dash=true; vueinst.m_users=false; vueinst.create=false; vueinst.m_hotspots=false; vueinst.m_capacities=false;">Home</button>
+        <button class="side-blocks" onclick="vueinst.dash=false; vueinst.m_users=true; vueinst.create=false; vueinst.m_hotspots=false; vueinst.m_capacities=false; getUsersInfo(); getSubs();">Manage Users</button>
+        <button class="side-blocks" onclick="vueinst.dash=false; vueinst.m_users=false; vueinst.create=true; vueinst.m_hotspots=false; vueinst.m_capacities=false;">Create Admin</button>
+        <button class="side-blocks" onclick="vueinst.dash=false; vueinst.m_users=false; vueinst.create=false; vueinst.m_hotspots=true; vueinst.m_capacities=false;">Manage Hotspots</button>
+        <button class="side-blocks" onclick="vueinst.dash=false; vueinst.m_users=false; vueinst.create=false; vueinst.m_hotspots=false; vueinst.m_capacities=true; getRestrictions()">Manage Capacities</button>
+    </div>
+
+    <!--Main body area-->
+    <div class="main" id="app">
+        <!--Admin Home-->
+        <div class="text-div1" v-show="dash">
+            <br>
+            <h1 class="h1-title">Welcome</h1>
+            <p class="admin-updates" id="timestamp"></p>
+
+            <!--Admin dashboard to show some data in a row of boxes-->
+            <div class="container">
+            <div class="row" style="justify-content: center">
+            <div id="admin-box" class="div-login-box row">
+                <div class="col-xs-4">
+        			<div class="admin-boxes">
+        			    <h3 class="h3-admin-box">Total Hotspots</h3>
+        			    <h3 class="h3-hotspots-box" id="total-hotspot"></h3>
+        			</div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="admin-boxes">
+        			    <h3 class="h3-admin-box">User Checked-ins</h3>
+        			    <h3 class="h3-numbers-box" id="total-checkin"></h3>
+        		    </div>
+                </div>
+                <div class="col-xs-4">
+                    <div class="admin-boxes">
+        			    <h3 class="h3-admin-box">Total Venues</h3>
+        			    <h3 class="h3-numbers-box" id="total-venues"></h3>
+        			</div>
+                </div>
+            </div>
+            </div>
+            </div>
+
+        </div>
+
+
+        <!--Admin Manage Users-->
+        <div class="text-div1" v-show="m_users">
+            <br>
+            <h1 class="h1-title">Manage Users</h1>
+
+            <button class="admin-options" id="emailUsers" onclick="emailUsers()">
+			Email Exposed Users
+		    </button>
+
+            <h3>Users exposed to a hotspot</h3>
+            <table class="table-info">
+              <tr>
+                <th>ID</th>
+
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Email</th>
+                <th>Contact No.</th>
+                <th>Hotspot Exposure?</th>
+              </tr>
+
+            <tbody id="users-info">
+                <!--Area for adding with AJAX-->
+            </tbody>
+
+            </table>
+
+            <div id="hidden-emails" style="visibility: hidden"></div>
+
+        </div>
+
+        <!--Admin Create Admins-->
+        <div class="text-div" v-show="create">
+            <br>
+            <h3 class="h3-sign">Please enter new admin details</h3>
+
+            <div class="form-create">
+                    <!--Label for attribute specifies which element id the label is bound to-->
+                    <label>Username</label>
+                    <br>
+                    <input id="admin_username" type="text" id="usernamelogin" class="form-control" placeholder="Username" size="35" required>
+                    <br>
+                    <label>Email</label>
+                    <br>
+                    <input id="admin_email" type="email" id="useremail" class="form-control" placeholder="Email" size="35" required>
+                    <br>
+                    <label>First Name</label>
+                    <br>
+            		<input id="admin_firstname" type="text" class="form-control" placeholder="First Name" required>
+            		<br>
+            		<label>Last Name</label>
+                    <br>
+            		<input id="admin_lastname" type="text" class="form-control" placeholder="Last Name" required>
+            		<br>
+                    <label>Password</label>
+                    <br>
+                    <input id="admin_password" type="password" class="form-control" placeholder="Password" size="35" required>
+                    <br>
+                    <a href="admin-home.html" class="btn btn-secondary">Cancel</a>
+                    <button class="btn btn-success long register-button" type="submit" onclick="createAdmins()">Register</button>
+                    <br>
+            </div>
+
+        </div>
+
+        <!--Admin Manage Hotspots-->
+        <div class="text-div4" v-show="m_hotspots">
+            <br>
+            <h1 class="h1-title">Manage Hotspots</h1>
+
+            <!--Map-->
+            <div id='map' class="map-homeview"></div>
+            <br>
+
+            <div class="div-line">
+                <label>Add hotspot:</label>
+            </div>
+            <div class="div-line2">
+                <input name="addhotspot" type="number" id="hotspot-zip-input" class="form-control" placeholder="Enter Zipcode" size="15" maxlength="15" required>
+            </div>
+            <div class="div-line3">
+                <button class="btn btn-success long add-hotspot-button" onclick="createHotspot()" type="submit">OK</button>
+            </div>
+
+            <br><br><br>
+
+            <div class="div-line">
+                <label>Remove hotspot:</label>
+            </div>
+            <div class="div-line2">
+                <input name="addhotspot" type="number" id="hotspot-zip-input-remove" class="form-control" placeholder="Enter Zipcode" size="15" maxlength="15" required>
+            </div>
+            <div class="div-line3">
+                <button class="btn btn-success long add-hotspot-button" onclick="removeHotspot()" type="submit">OK</button>
+            </div>
+            <br>
+
+            <div onclick="getHotspotZipsAdmin()">
+                <button class="admin-options2" id="viewhotspotsadmin">
+    			View Hotspot List
+    		    </button>
+            </div>
+
+            <div id="adminHotspotModal" class="modal-admin">
+                <div class="modal-admin-hotspots-body">
+                    <div class="modal-admin-header">
+                        <span class="close-modal" id="close-hotspot-x">&times;</span>
+                        <h1 class="h1-home">Hotspot List</h1>
+                    </div>
+
+                    <div class="text-divhs">
+                        <table class="table-hotspots">
+                          <tr>
+                            <th>Hotspot Zips</th>
+                          </tr>
+
+                        <tbody  id="hotspot-zips">
+                            <!--Area for adding with AJAX-->
+                        </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--Admin Manage Capacities-->
+        <div class="text-div1" v-show="m_capacities">
+            <br>
+            <h1 class="h1-title">Manage Capacities</h1>
+            <div id="restrict-state"></div>
+            <button class="admin-options" id="restrict-cap" onclick="restrictCap()">
+			Restrict Capacities
+		    </button>
+
+		    <button class="admin-options" id="lift-restrict" onclick="liftRestrict()">
+			Lift Restrictions
+		    </button>
+
+		    <p>Applying restrictions will set all venue capacities of the state to 10% of venue size (rounded to the nearest 10).</p>
+		    <p>Lifting restrictions will return capacities back to 50% of venue size (rounded to nearest 10).</p>
+        </div>
+
+
+
+    </div>
+    </div>
+</body>
+
+</html>

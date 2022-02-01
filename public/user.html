@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>User Home</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+  <script src="javascripts/main.js" defer></script>
+  <script src="javascripts/user.js" defer></script>
+  <script src="javascripts/map.js" defer></script>
+  <script src="javascripts/index.js" defer></script>
+  <script src="javascripts/browser.js" defer></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+  <!--Mapbox-->
+  <script src='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js'></script>
+  <link href='https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css' rel='stylesheet' />
+
+  <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+  <meta name="google-signin-client_id" content="341339043890-4rr3gtr98gbja66hapco57gc0qhao9hc.apps.googleusercontent.com">
+  <script>
+    function signOut() {
+      var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+      });
+    }
+
+    function onLoad() {
+      gapi.load('auth2', function() {
+        gapi.auth2.init();
+      });
+    }
+  </script>
+
+
+</head>
+
+<body onload="getUserHistory(); getHotspotZips(); getUserFirstName(); getUserInfo()">
+    <!--Banner using navbar-->
+    <div class ="navbar navbar-user">
+        <img src="https://i.imgur.com/apF8BRb.png" alt="COVID banner" height="150">
+        <!--Responsive design to hide title image when browser becomes narrow-->
+        <div class="img-title">
+            <h1 class="h1-banner">User</h1>
+        </div>
+        <!--Sign out button TODO: make it a real sign out feature-->
+        <button class="btn btn-danger navbar-btn navbar-ml-auto" onclick="logout(); signOut()">Log Out</button>
+    </div>
+
+    <div class="text-div">
+        <h1 class="h1-title">Welcome</h1>
+        <h4 class="greetings-user" id="greet_user"></h4>
+    </div><br>
+    <!--Map-->
+    <div class="container">
+    <div id='map' class="map-homeview"></div>
+    </div>
+    <div class="text-div">
+        <h5 class="h5-hotspots">Hotspots near you (zip):</h5>
+        <div class="text-div1" id="hotspot-zips"></div>
+
+    </div>
+
+    <!--User's options-->
+    <div id="login-box" class="div-userop-box row">
+        <div class="col-xs-4">
+            <button class="user-options" id="userCheckBtn">
+			Check In
+		    </button>
+        </div>
+        <div class="col-xs-4" onclick="getUserHistory()">
+            <button class="user-options" id="userHistBtn">
+			History
+		    </button>
+        </div>
+        <div class="col-xs-4">
+            <button class="user-options" id="userProfileBtn">
+			Update Profile
+		    </button>
+        </div>
+    </div>
+
+    <!--Checkin modal pop-up-->
+    <div id="userCheckModal" class="modal">
+        <div class="modal-user-check-body">
+            <div class="modal-check-header">
+                <span class="close-modal" id="close-check-x">&times;</span>
+                <h1 class="h1-home">Check-in</h1>
+            </div>
+
+            <div class="text-div3">
+                <!--<button class="button-qr">
+                    <img src="https://i.imgur.com/vsGsq7Z.png" alt="Not a QR pic">
+                    Scan QR Code
+                </button><br> -->
+                <button class="button-qr" onclick="showBizTable()">
+                <!-- <img id="imaging" src="https://cirocosta.github.io/qcode-decoder/dist/assets/qrcode.png"> -->
+                SHOW BUSINESS
+                </button>
+
+                <table class="table-codes">
+
+                    <tbody id="show_name">
+                        <!--Area for adding with AJAX-->
+                    </tbody>
+
+                <!-- ^This will need some form of limit control (scrolling/pagination/auto-showmore)-->
+                </table>
+
+
+                <!--<button onclick="getUserInfo()">CLICK TO CHECK IN</button>-->
+                <p id="blank-space" style="visibility: hidden"></p> <!-- DONT DELETE. REQUIRED FOR UserCheckIn Table -->
+                    <div class="div-line1">
+                        <label>Enter code:</label>
+                    </div>
+                    <div class="div-line5">
+                        <input name="checkin" type="text" id="user-check-in-code" class="form-control" placeholder="Enter code" size="29" required autofocus>
+                    </div>
+                    <div class="div-line4">
+                        <button class="btn btn-success btn-lg long check-code-button" onclick="userCheckIn()" type="submit">OK</button>
+                    </div>
+                <br>
+                <br>
+            </div>
+
+        </div>
+    </div>
+
+    <!--History modal pop-up-->
+    <div id="userHistModal" class="modal">
+        <div class="modal-user-history-body">
+            <div class="modal-check-header">
+                <span class="close-modal" id="close-hist-x">&times;</span>
+                <h1 class="h1-home">Check-in History</h1>
+            </div>
+
+            <div class="text-divh">
+                <table class="table-history">
+                  <tr>
+                    <th>Date/Time</th>
+                    <th>Location</th>
+                    <th>Hotspot</th>
+                  </tr>
+
+                <tbody  id="user-history">
+                    <!--Area for adding with AJAX-->
+                </tbody>
+
+                <!-- ^This will need some form of limit control (scrolling/pagination/auto-showmore)-->
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!--User Profile modal pop-up-->
+    <div id="userProfileModal" class="modal">
+        <div class="modal-user-profile-body">
+            <div class="modal-profile-header">
+                <span class="close-modal" id="close-prof-x">&times;</span>
+                <h1 class="h1-home">Profile</h1>
+            </div>
+
+            <div class="text-div">
+                <div class="form-create2">
+                    <br>
+                    <div class="div-line7">
+                        Username:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_username" type="text" class="form-control" placeholder="Username" size="35">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateUsername()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Email:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_email" type="email" class="form-control" placeholder="Email" size="35">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateEmail()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        First Name:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_firstname" type="text" class="form-control" placeholder="First Name">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateFirstname()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Last Name:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_lastname" type="text" class="form-control" placeholder="Last Name">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateLastname()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Address:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_address" type="text" class="form-control" placeholder="Address">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateAddress()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Zip:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_zip" type="number" class="form-control" placeholder="Zip">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateZip()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Date of Birth:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_dob" type="date" class="form-control">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdateDOB()">Update</button>
+                    </div>
+                    <br><br>
+
+                    <div class="div-line7">
+                        Phone no.:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_number" type="tel" class="form-control" placeholder="Phone Number">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdatePhone()">Update</button>
+                    </div>
+                    <br><br><br>
+
+                    <div class="div-line12">
+                        Email Notifications:&nbsp;
+                    </div>
+                    <div class="div-line8">
+                        <button class="btn btn-success long register-button" type="submit" onclick="emailSubscribe()">Subscribe</button>
+                    </div>
+                    <div class="div-line11">
+                        &nbsp;&nbsp;<button class="btn btn-danger long register-button" type="submit" onclick="emailUnsub()">Unsubscribe</button>
+                    </div>
+                    <br><br><br>
+
+                    <div class="div-line7">
+                        Password:&nbsp;
+                    </div>
+                    <div class="div-line6">
+                        <input id="user_edit_password" type="password" class="form-control" placeholder="Password" size="35">
+                    </div>
+                    <div class="div-line8">
+                        &nbsp;<button class="btn btn-success long register-button" type="submit" onclick="userUpdatePassword()">Update</button>
+                    </div>
+                    <br><br>
+
+            		<div class="div-line9">
+                        *Current Password:
+                    </div>
+                    <div class="div-line10">
+                        <input id="user_current_password" type="password" class="form-control" placeholder="Password" size="35" required>
+                    </div>
+                    <br><br><br>
+                    <p>*To update password you must confirm your current password</p>
+                    <br>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>

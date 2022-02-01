@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Covid Tracker</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+  <!-- font awesome -->
+  <script src="https://kit.fontawesome.com/832a41fd6d.js" crossorigin="anonymous"></script>
+  <script src="javascripts/main.js" defer></script>
+
+  <!--Bootstrap-->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <!-- jQuery library -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <!--css stylesheet-->
+  <link rel="stylesheet" href="/stylesheets/style.css">
+
+  <!-- Popper JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+  <!-- Latest compiled JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <!-- google sign in -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id" content="341339043890-4rr3gtr98gbja66hapco57gc0qhao9hc.apps.googleusercontent.com">
+  <script>
+    function renderButton() {
+      gapi.signin2.render('my-signin2', {
+        'scope': 'profile email',
+        'width': 240,
+        'height': 50,
+        'longtitle': true,
+        'theme': 'dark',
+        'onsuccess': onSuccess,
+        'onfailure': onFailure
+      });
+    }
+  </script>
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body class="container-fluid" style="
+    padding-left: 0px;
+    padding-right: 0px;
+">
+    <!--Banner using navbar-->
+    <div class ="navbar navbar-index">
+        <img src="https://i.imgur.com/apF8BRb.png" alt="COVID banner" height="150">
+        <!--Responsive design to hide title image when browser becomes narrow-->
+        <div class="img-title">
+            <h1 class="h1-banner">Welcome</h1>
+        </div>
+        <!--Sign up-->
+        <button type="button" class="btn btn-success btn-lg sign-up-banner" id="signUpBtn">Sign Up</button>
+    </div>
+
+    <br>
+    <h1 class="h1-home container">Please login as ...</h1>
+
+    <!--Login options-->
+    <div id="login-box" class="div-login-box">
+        <!--User login-->
+    <div class="row" id="login_row">
+        <div class="col-xs-4">
+            <button class="button-login" id="userLoginBtn">
+    			<img class="icon-login hover-zoom" src="https://i.imgur.com/qhHOhBR.png" alt="user logo">
+    			<span class="login-block">User</span>
+		    </button>
+        </div>
+        <!--Owner login-->
+        <div class="col-xs-4">
+            <button class="button-login" id="ownerLoginBtn">
+    			<img class="icon-login hover-shadow" src="https://i.imgur.com/a6nOxeK.png" alt="business logo">
+    			<span class="login-block">Venue Owner</span>
+		    </button>
+        </div>
+        <!--Admin login-->
+        <div class="">
+            <button class="button-login" id="adminLoginBtn">
+    			<img class="icon-login hover-shadow" src="https://i.imgur.com/5Vhyi6l.png" alt="admin logo">
+    			<span class="login-block">Administrator</span>
+		    </button>
+        </div>
+    </div>
+
+    <!--User login modal pop-up-->
+    <div id="userModal" class="modal-login">
+        <div class="modal-login-content">
+            <div class="modal-login-header">
+                <span class="close-modal" id="close-x">&times;</span>
+                <h3 class="logintitle">User Login</h3>
+            </div>
+
+            <div class="modal-login-body">
+                <!--Label for attribute specifies which element id the label is bound to-->
+                <label>Username</label>
+                <br>
+                <input name="username" type="text" class="form-control" placeholder="Username" size="35" id="user_username_login" required autofocus>
+                <br>
+                <label>Password</label>
+                <br>
+                <input name="password" type="password" class="form-control" placeholder="Password" size="35" id="user_password_login" required>
+                <br><br>
+                <!--<p><a id="fg-pw" href="forgot-pw.html">Forgot Password?</a></p>-->
+                <div class="container"><button class="btn btn-outline-success long sign-in-button" type="submit" onclick="userLogin()">Sign in</button>
+                <a href="user-signup.html" class="btn btn-outline-success long create-acc-button">Create Account</a></div>
+                <!--Login with social media-->
+
+                <div class="text-div">
+                    <div class="btn-group" style="margin-left:2px">
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    </div>
+                </div>
+
+                <!--facebook-->
+                <!--<div class="text-div">
+		              <!--  <a class='btn btn-primary disabled'><i class="fab fa-facebook" style="width:16px; height:20px; color:white;"></i></a>-->
+		              <!--  <a class='btn btn-primary' href='' style="width:12em"> Sign in with Facebook</a>-->
+                <!--    </div>-->
+
+                <!--google-->
+                    <!--<div class="g-signin2" data-onsuccess="onSignIn"></div>-->
+	                <!--<div class="btn-group" style="margin-top:10px;">-->
+		               <!-- <a class='btn btn-danger disabled'><i class="fab fa-google" style="width:16px; height:20px; color:white;"></i></a>-->
+		               <!-- <a class='btn btn-danger g-signin2' data-onsuccess="onSignIn"> Sign in with Google</a>-->
+	                <!--</div>-->
+	                <!--<div id="my-signin2"></div>-->
+
+	                <!--start of test-->
+	                <!--end of test-->
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Owner login modal pop-up-->
+    <div id="ownerModal" class="modal-login">
+        <div class="modal-login-content">
+            <div class="modal-login-header">
+                <span class="close-modal" id="close2-x">&times;</span>
+                <h3 class="logintitle">Owner Login</h3>
+            </div>
+
+            <div class="modal-login-body">
+                <!--Label for attribute specifies which element id the label is bound to-->
+                <label>Username</label>
+                <br>
+                <input name="username" type="text" class="form-control" placeholder="Username" size="35" id="owner_username_login" required>
+                <br>
+                <label>Password</label>
+                <br>
+                <input name="password" type="password" class="form-control" placeholder="Password" size="35" id="owner_password_login" required>
+                <br><br>
+                <!--<p><a id="fg-pw" href="forgot-pw.html">Forgot Password?</a></p>-->
+                <!--<button class="btn btn-success long sign-in-button" type="submit">Sign in</button>
+                <a href="owner-signup.html" class="btn btn-info long create-acc-button">Create Account</a>-->
+
+                <div class="container"><button class="btn btn-outline-success long sign-in-button" type="submit" onclick="ownerLogin()">Sign in</button>
+                <a href="owner-signup.html" class="btn btn-outline-success long create-acc-button">Create Account</a></div>
+                <!--Login with social media-->
+                <div class="text-div">
+                    <div class="btn-group" style="margin-left:2px">
+                        <div class="g-signin2" data-onsuccess="onSignInOwner"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Admin login modal pop-up-->
+    <div id="adminModal" class="modal-login">
+        <div class="modal-login-content">
+            <div class="modal-login-header">
+                <span class="close-modal" id="close3-x">&times;</span>
+                <h3 class="logintitle">Admin Login</h3>
+            </div>
+
+            <div class="modal-login-body-2">
+                <!--Label for attribute specifies which element id the label is bound to-->
+                <label>Username</label>
+                <br>
+                <input name="username" type="text" class="form-control" placeholder="Username" size="35" id="admin_username_login" required>
+                <br>
+                <label>Password</label>
+                <br>
+                <input name="password" type="password" class="form-control" placeholder="Password" size="35" id="admin_password_login" required>
+                <br><br>
+                <!--<p><a href="forgot-pw.html">Forgot Password?</a></p>-->
+                <button class="btn btn-success long" type="submit" onclick="adminLogin()">Sign in</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!--Sign up choose account modal pop-up-->
+    <div id="signUpModal" class="modal-login">
+        <div class="modal-choose-acc-body">
+            <div class="modal-choose-header">
+                <h1 class="h1-home">Create account type</h1>
+            </div>
+
+            <div class="modal-choose-acc-body">
+                <!--Choose account type-->
+                <div class="div-choose-acc">
+                    <div class="create-col">
+                        <button class="button-login" id="userLoginBtn">
+            			<img class="icon-login" src="https://i.imgur.com/qhHOhBR.png" alt="user logo" onclick="location.href='user-signup.html'">
+            			User
+            		    </button>
+                    </div>
+                    <div class="create-col">
+                        <button class="button-login" id="ownerLoginBtn">
+            			<img class="icon-login" src="https://i.imgur.com/a6nOxeK.png" alt="business logo" onclick="location.href='owner-signup.html'">
+            			Venue Owner
+            		    </button>
+                    </div>
+                    <br>
+                    <button class="btn btn-secondary btn-lg cancelSignUp" id="cancelSign">Back</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+
+</html>
